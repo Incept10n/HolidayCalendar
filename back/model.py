@@ -6,6 +6,6 @@ class dates(Base):
 
     id = Column(Integer, primary_key=True)
     day = Column(Integer)
-    month = Column(String(250))
-    holiday = Column(String(250))
+    month = Column(String(255))
+    holiday = Column(String(255))
 
