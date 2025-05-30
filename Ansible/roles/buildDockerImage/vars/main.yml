@@ -1,0 +1,10 @@
+---
+images:
+  - dir: ../../../../front
+    dtag: front
+  - dir: ../../../../db
+    dtag: db
+  - dir: ../../../../back
+    dtag: back
+  - dir: ../../../../nginx
+    dtag: nginx

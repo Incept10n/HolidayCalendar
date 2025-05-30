@@ -1,0 +1,10 @@
+---
+- name: Build an image and push it to a private repo
+  community.docker.docker_image:
+    build:
+      path: "{{ item.dir }}"
+    name: incept1on/hcalendar
+    tag: "{{ item.dtag }}"
+    push: true
+    source: build
+  loop: "{{ images }}"

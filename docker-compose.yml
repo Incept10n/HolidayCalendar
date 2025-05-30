@@ -1,0 +1,31 @@
+services:
+  api:
+    build: 
+      context: ./back
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/hcalendar
+    depends_on:
+      - db
+
+  db:
+    build: 
+      context: ./db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=hcalendar
+
+  front:
+    build: 
+      context: ./front/hcalendar
+      args:
+        - REACT_APP_API_URL=http://localhost:80/api
+    
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - front
