@@ -1,0 +1,8 @@
+- name: Pull docker compose file and run it on the server
+  hosts: all
+  become: true
+  tasks:
+    - name: Pull and run docker compose up
+      ansible.builtin.import_role:
+        name: pullDcomposeAndRun
+      changed_when: true

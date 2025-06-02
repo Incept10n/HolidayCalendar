@@ -34,3 +34,15 @@
 - name: Install Docker Module for Python
   ansible.builtin.pip:
     name: docker
+
+- name: Ensure group "docker" exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add the user to dockerGroup
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups:
+      - docker
+    append: true

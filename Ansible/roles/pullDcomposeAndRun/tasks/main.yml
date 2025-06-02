@@ -1,0 +1,17 @@
+---
+- name: Copy docker compose file to remote server
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_user }}/docker-compose.yml
+    owner: '{{ ansible_user }}'
+    mode: '0644'
+
+- name: Run docker compose down # noqa: command-instead-of-shell
+  ansible.builtin.shell:
+    cmd: docker compose down
+  changed_when: true
+
+- name: Run docker compose up # noqa: command-instead-of-shell
+  ansible.builtin.shell:
+    cmd: docker compose up -d --pull always --force-recreate
+  changed_when: true

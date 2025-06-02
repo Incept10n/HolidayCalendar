@@ -1,0 +1,25 @@
+services:
+  api:
+    image: incept1on/hcalendar:back
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/hcalendar
+    depends_on:
+      - db
+
+  db:
+    image: incept1on/hcalendar:db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=hcalendar
+
+  front:
+    image: incept1on/hcalendar:front
+    
+  nginx:
+    image: incept1on/hcalendar:nginx
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - front

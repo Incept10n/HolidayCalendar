@@ -1,10 +1,10 @@
 - name: Build and push to dockerhub the image
   hosts: all
-  become: true
   tasks:
     - name: Install docker
       ansible.builtin.import_role:
         name: installDocker
+      become: true
 
     - name: Build and push images to dockerhub
       ansible.builtin.import_role:
