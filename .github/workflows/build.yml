@@ -16,6 +16,10 @@ jobs:
       - name: Change the ip in the inventory like in vars
         run: |
           sed 's/ansible_host:.*$/ansible_host: ${{vars.ANSIBLE_HOST}}/' ./Ansible/inventory.yml
+      
+      - name: Create the pass.txt file
+        run: |
+          echo ${{ secrets.VAULT_PASSWORD }} > ./Ansible/pass.txt
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
