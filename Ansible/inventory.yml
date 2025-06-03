@@ -1,6 +1,6 @@
 all:
   hosts:
     main:
-      ansible_host: 158.160.116.120
+      ansible_host: 51.250.7.170
       ansible_port: 22
       ansible_user: ubuntu

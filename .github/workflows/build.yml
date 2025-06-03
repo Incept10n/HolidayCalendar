@@ -17,15 +17,13 @@ jobs:
         run: |
           sed 's/ansible_host:.*$/ansible_host: ${{vars.ANSIBLE_HOST}}/' ./Ansible/inventory.yml
 
-      - name: Create pass file in Ansible folder
-        run: |
-          echo ${{secrets.VAULT_PASSWORD}} > ./Ansible/pass.txt
-    
       - name: Install SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_ed25519 # optional
+          known_hosts: 'github.com'
+          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
       - name: Run ansible playbook buildAndPush.ansible.yml
         run: |
