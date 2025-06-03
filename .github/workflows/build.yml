@@ -17,29 +17,21 @@ jobs:
         run: |
           sed 's/ansible_host:.*$/ansible_host: ${{vars.ANSIBLE_HOST}}/' ./Ansible/inventory.yml
 
-      - name: Runs installation of docker and build the images
-        uses: dawidd6/action-ansible-playbook@v3
+      - name: Create pass file in Ansible folder
+        run: |
+          cat ${{secrets.VAULT_PASSWORD}} > ./Ansible/pass.txt
+    
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-          # Required, playbook filepath
-          playbook: buildAndPush.ansible.yml
-          # Optional, directory where playbooks live
-          directory: ./Ansible
-          # Optional, SSH private key
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          # Optional, encrypted vault password
-          vault_password: ${{secrets.VAULT_PASSWORD}}
-          # Optional, additional flags to pass to ansible-playbook
-          options: |
-            --inventory inventory.yml
-            --verbose
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_ed25519 # optional
+          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
-      - name: Runs pulling docker compose to the remote server and run it
-        uses: dawidd6/action-ansible-playbook@v3
-        with:
-          # Required, playbook filepath
-          playbook: pullDockerComposeAndRun.ansible.yml
-          # Optional, directory where playbooks live
-          directory: ./Ansible
-          # Optional, SSH private key
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          # Optional, encrypted vault password
+      - name: Run ansible playbook buildAndPush.ansible.yml
+        run: |
+          ansible-playbook ./Ansible/buildAndPush.ansible.yml -i ./Ansible/inventory.yml --vault-pass-file ./Ansible/pass.txt
+          
+      - name: Run ansible playbook pullDockerComposeAndRun.ansible.yml
+        run: |
+          ansible-playbook ./Ansible/pullDockerComposeAndRun.ansible.yml -i ./Ansible/inventory.yml 
