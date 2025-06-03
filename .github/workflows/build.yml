@@ -29,11 +29,6 @@ jobs:
           known_hosts: 'github.com'
           if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
-      - name: Install python packages
-        run: |
-          pip install requests pyOpenSSL paramiko 
-        
-
       - name: Run ansible playbook buildAndPush.ansible.yml
         run: |
           ansible-playbook ./Ansible/buildAndPush.ansible.yml -i ./Ansible/inventory.yml --vault-pass-file ./Ansible/pass.txt --ssh-extra-args='-o StrictHostKeyChecking=no'
