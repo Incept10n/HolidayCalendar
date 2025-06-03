@@ -22,16 +22,15 @@ jobs:
           echo ${{secrets.VAULT_PASSWORD}} > ./Ansible/pass.txt
     
       - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: id_ed25519 # optional
-          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
       - name: Run ansible playbook buildAndPush.ansible.yml
         run: |
-          ansible-playbook ./Ansible/buildAndPush.ansible.yml -i ./Ansible/inventory.yml --vault-pass-file ./Ansible/pass.txt
+          ansible-playbook ./Ansible/buildAndPush.ansible.yml -i ./Ansible/inventory.yml --vault-pass-file ./Ansible/pass.txt --ssh-extra-args='-o StrictHostKeyChecking=no'
           
       - name: Run ansible playbook pullDockerComposeAndRun.ansible.yml
         run: |
-          ansible-playbook ./Ansible/pullDockerComposeAndRun.ansible.yml -i ./Ansible/inventory.yml 
+          ansible-playbook ./Ansible/pullDockerComposeAndRun.ansible.yml -i ./Ansible/inventory.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
