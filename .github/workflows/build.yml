@@ -19,6 +19,7 @@ jobs:
 
       - name: Create pass file in Ansible folder
         run: |
+          touch ./Ansible/pass.txt
           cat ${{secrets.VAULT_PASSWORD}} > ./Ansible/pass.txt
     
       - name: Install SSH key
