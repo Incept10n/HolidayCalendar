@@ -1,0 +1,45 @@
+name: Build and push files to the dockerhub
+
+on: 
+  workflow_dispatch:
+  push:
+  pull_request:
+
+
+jobs:
+  some:
+    name: build and push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Change the ip in the inventory like in vars
+        run: |
+          sed 's/ansible_host:.*$/ansible_host: ${{vars.ANSIBLE_HOST}}/' ./Ansible/inventory.yml
+
+      - name: Runs installation of docker and build the images
+        uses: dawidd6/action-ansible-playbook@v3
+        with:
+          # Required, playbook filepath
+          playbook: buildAndPush.ansible.yml
+          # Optional, directory where playbooks live
+          directory: ./Ansible
+          # Optional, SSH private key
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD}}
+          # Optional, additional flags to pass to ansible-playbook
+          options: |
+            --inventory inventory.yml
+            --verbose
+
+      - name: Runs pulling docker compose to the remote server and run it
+        uses: dawidd6/action-ansible-playbook@v3
+        with:
+          # Required, playbook filepath
+          playbook: pullDockerComposeAndRun.ansible.yml
+          # Optional, directory where playbooks live
+          directory: ./Ansible
+          # Optional, SSH private key
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          # Optional, encrypted vault password
