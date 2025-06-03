@@ -31,7 +31,7 @@ jobs:
 
       - name: Install python packages
         run: |
-          pip install requests pyOpenSSL paramiko, 
+          pip install requests pyOpenSSL paramiko 
         
 
       - name: Run ansible playbook buildAndPush.ansible.yml
